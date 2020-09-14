@@ -48,17 +48,6 @@ systemctl stop named >> /root/install.log
 echo "creating user "$1" and adding to wheel"
 useradd -G wheel $1 > /root/install.log
 echo $2 |passwd $1 --stdin  >> /root/install.log
-echo "Disabling root access to ssh use "$1"."
-echo -n "${MAGENTA}Enter SSH port to change (recommended) from ${BLUE}${sshport}${MAGENTA}:${NORMAL} "
-		read customsshport
-		if [ $customsshport ]; then
-			sshport=$customsshport
-		fi
-echo "Your ssh port is ${sshport}"
-sed -i '/PermitRootLogin/ c\PermitRootLogin no' /etc/ssh/sshd_config
-sed -i -e "s/#Port 22/Port ${sshport}/g" /etc/ssh/sshd_config
-sed -i -e 's/#UseDNS yes/UseDNS no/g' /etc/ssh/sshd_config
-systemctl restart sshd  >> /root/install.log
 
 echo "installing and configuring directslave"
 cd ~
